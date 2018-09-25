@@ -1731,10 +1731,6 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		goto put_sock_ret_res;
 	}
 	sock_uid = sk->sk_uid;
-	/*
-	 * TODO: unhack how to force just accounting.
-	 * For now we only do iface stats when the uid-owner is not requested
-	 */
 	if (do_tag_stat)
 		account_for_uid(skb, sk, from_kuid(&init_user_ns, sock_uid), par);
 
@@ -1762,7 +1758,7 @@ static bool qtaguid_mt(const struct sk_buff *skb, struct xt_action_param *par)
 		kgid_t gid_max = make_kgid(&init_user_ns, info->gid_max);
 		set_sk_callback_lock = true;
 		read_lock_bh(&sk->sk_callback_lock);
-		MT_DEBUG("qtaguid[%d]: sk=%pK->sk_socket=%pK->file=%pK\n",
+		MT_DEBUG("qtaguid[%d]: sk=%p->sk_socket=%p->file=%p\n",
 			par->hooknum, sk, sk->sk_socket,
 			sk->sk_socket ? sk->sk_socket->file : (void *)-1LL);
 		filp = sk->sk_socket ? sk->sk_socket->file : NULL;
